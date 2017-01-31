@@ -1,0 +1,53 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="scoreboard-input">
+    <template>
+        <style>
+            :host {
+                display: block;
+            }
+        </style>
+        <div>
+            <input type="number" value="{{inputValue::input}}">
+        </div>
+        <button on-tap="increase">+</button>
+        <button on-tap="decrease">-</button>
+    </template>
+    <script>
+        Polymer({
+            is: 'scoreboard-input',
+            properties: {
+                inputValue: {
+                    type: Number,
+                    value: 0,
+                    notify: true,
+                    observer: '_rangeValue'
+                },
+                minValue: {
+                    type: Number,
+                    value: 0
+                },
+                maxValue: {
+                    type: Number,
+                    value: 100
+                }
+            },
+            increase: function(){
+                this.inputValue++;
+            },
+            decrease: function(){
+                this.inputValue--;
+            },
+            _rangeValue: function(val){
+                if (val < this.minValue){
+                    this.inputValue = this.minValue;
+                }
+                if(val > this.maxValue) {
+                     this.inputValue = this.maxValue;
+                }
+             
+            }
+
+        });
+    </script>
+</dom-module>

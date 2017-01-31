@@ -1,0 +1,31 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<link rel="import" href="scoreboard-input.html">
+
+<dom-module id="scoreboard-app">
+    <template>
+        <style>
+            :host {
+                display: block;
+            }
+        </style>
+        <scoreboard-input input-value="{{numberValue}}" min-value="5" id="scoreboardInput"></scoreboard-input>
+        <p>[[numberValue]]
+        <button on-tap="aumentar">Aumentar desde el exterior</button>
+        </p>
+    </template>
+    <script>
+        Polymer({
+            is: 'scoreboard-app',
+            properties: {
+                numberValue: {
+                    type: Number,
+                    value: 60    
+                }
+            },
+            aumentar: function(){
+                this.$.scoreboardInput.increase();
+            }
+        });
+    </script>
+</dom-module>
