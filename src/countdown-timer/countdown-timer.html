@@ -1,0 +1,80 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-progress/paper-progress.html">
+
+<dom-module id="countdown-timer">
+    <template>
+        <style>
+            :host {
+                display: block;
+                background-color: #e0e0e0;
+            }
+            paper-progress {
+                width: 100%;
+                --paper-progress-active-color: #FFC107;
+            }
+            @keyframes blink {
+                50%{
+                    opacity: 0;
+                }
+            }
+
+            .blink {
+                animation: blink .5s infinite;
+                --paper-progress-active-color:#D32F2F;
+            }
+        </style>
+        <paper-progress
+             value="[[timeElapsed]]"
+             max="[[time]]"
+             id="bar"
+        ></paper-progress>
+    </template>
+    <script>
+        Polymer({
+            is: 'countdown-timer',
+            properties: {
+                launcher: Object,
+                time:  Number,
+                timeElapsed: {
+                    type: Number,
+                    value: 0
+                }
+            },
+            observers: [
+                'observerTimeElapsed(timeElapsed, time)'
+            ],
+            ready: function(){
+                this.launchTimer();
+            },
+            detached: function(){
+                this.cancelAsync(this.launcher);
+            },
+            restart: function() {
+                this.stop();
+                this.timeElapsed = 0;
+                this.launchTimer();
+            },
+            stop: function(){
+                this.updateStyles();
+                this.cancelAsync(this.launcher);
+                this.$.bar.classList.remove('blink');
+                this.updateStyles();
+            },
+            launchTimer: function(){
+                if(this.timeElapsed < this.time){
+                    this.timeElapsed+=100;
+                    this.launcher = this.async(this.launchTimer, 100);
+                }else{
+                    this.fire('wrongAnswer');
+                    this.stop();
+                }
+            },
+            observerTimeElapsed(timeElapsed, time){
+                if(timeElapsed === Math.floor(time * 75 / 100)){
+                        this.$.bar.classList.add('blink');
+                        this.updateStyles();
+                }
+            }
+        });
+    </script>
+</dom-module>

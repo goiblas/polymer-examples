@@ -1,0 +1,93 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-swipeable-container/iron-swipeable-container.html">
+
+<dom-module id="questions-card">
+    <template>
+        <style>
+
+            :host {
+                display: block;
+                height: 100%;
+                font-family: 'Cormorant Garamond', serif;
+            }
+        iron-swipeable-container{
+            width: 100%;
+            height: 100%;
+            margin: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+       div {
+            box-shadow: #ccc 0 1px 3px;
+            background-color:rgba(255,255,255,.72);
+            padding: 35px 25px;
+            text-align: center;
+            font-size: 24px;
+            line-height: 34px;
+        }
+        
+        </style>
+
+
+    <iron-swipeable-container on-iron-swipe="launchAnswer" id="wrapper">
+    </iron-swipeable-container>
+
+
+    </template>
+    <script>
+        Polymer({
+            is: 'questions-card',
+            properties: {
+               questions: Array,
+               counter: {
+                    type: Number,
+                    value: 0
+                }
+            },
+            ready: function(){
+                this.newQuestion();
+            },
+            restart: function(){
+
+                var node = document.querySelector('div');
+                Polymer.dom(this.$.wrapper).removeChild(node);
+                this.counter++;
+                this.newQuestion();
+
+            },
+            newQuestion: function(){
+                if(this.counter < this.questions.length){
+                    this.createNewQuiz();
+                }else{
+                    this.fire('end');
+                }
+            },
+            launchAnswer: function(e, data){
+                var res = data.direction;
+                var translateRes = false;
+                var correction = this.questions[this.counter].answer;
+                
+                if(res === 'right'){
+                    translateRes = true;
+                }
+
+                if(translateRes === correction){
+                    this.fire('rightAnswer');
+                }else {
+                    this.fire('wrongAnswer');
+                }
+                
+                this.restart();
+            },
+            createNewQuiz: function(){
+ 
+               var newQuestionCard = document.createElement("div");
+               newQuestionCard.textContent = this.questions[this.counter].quiz;
+               Polymer.dom(this.$.wrapper).appendChild(newQuestionCard);       
+
+               
+            }
+        });
+    </script>
+</dom-module>

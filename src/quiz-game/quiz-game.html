@@ -1,0 +1,107 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
+
+<link rel="import" href="questions-card.html">
+
+<dom-module id="quiz-game">
+    <template>
+        <style>
+
+            :host {
+                display: block;
+                height: 100%;
+               -moz-user-select: none;
+                -ms-user-select: none;
+                -webkit-user-select: none;
+                user-select: none;
+                cursor: default;
+            }
+            questions-card {
+                position: absolute;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 50%;
+                z-index: 2;
+                font-family: 'Cormorant Garamond', serif;
+            }
+            
+            .layout {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                height: 100%;
+                font-family: 'Cormorant Garamond', serif;
+                
+            }
+            .layout div {
+                width: 50%;
+                padding-top: 80px;
+                text-align: center;
+                font-size: 90px;
+                opacity: .2;
+            }
+            paper-toast {
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                font-size: 17px;
+                line-height: 24px;
+            }
+
+        </style>
+        
+
+        <questions-card 
+        questions="[[questions]]" 
+        id="questions"
+        ></questions-card>
+
+        <div class="layout">
+        <div class="false">False</div>
+        <div class="true">True</div>   
+        </div>
+        <paper-toast id="toast"></paper-toast>
+    </template>
+    <script>
+        Polymer({
+            is: 'quiz-game',
+            properties: {
+                time: {
+                    type: Number,
+                    value: 50000
+                },
+                questions: {
+                    type: Array,
+                    value: function(){
+                        return [
+                            {quiz: '¿Es esta una pregunta con valor falso?', answer: false},
+                            {quiz: '¿La siguiente pregunta seguro que es verdadera?', answer: true},
+                            {quiz: '¿Era blanco el caballo de Santigo?', answer: true},
+                            {quiz: '¿Es esta la última pregunta?', answer: true}
+                        ]
+                    }
+                },
+                success:{
+                    type:Number,
+                    value: 0
+                }
+            },
+            listeners: {
+                'rightAnswer': '_rightAnswer',
+                'wrongAnswer': '_wrongAnswer',
+                'end': 'end'
+            },
+            _rightAnswer:function(){
+                this.success++;
+                this.$.toast.text = 'Correcto!';
+                this.$.toast.open();
+            },
+            _wrongAnswer:function(){
+                this.$.toast.text = 'Error!';
+                this.$.toast.open();
+            },
+            end: function(){
+                this.$.toast.text = 'Enhorabuena has conseguido ' + this.success + ' acietos';
+                this.$.toast.open();
+            }
+        });
+    </script>
+</dom-module>
