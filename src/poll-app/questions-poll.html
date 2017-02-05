@@ -1,0 +1,62 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/neon-animation/neon-shared-element-animatable-behavior.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/neon-animation/animations/fade-out-animation.html">
+<link rel="import" href="../../bower_components/neon-animation/animations/hero-animation.html">
+
+<link rel="import" href="poll-style.html">
+
+<dom-module id="questions-poll">
+    <template>
+       <style include="poll-style">
+        .wrap {
+            flex-direction: column;
+        }
+    </style>
+
+<div class="wrap">
+    <div class="item">
+    <div class="question">
+        How do you feel today?
+    </div>
+
+<div><paper-button id="elem" on-tap="send">Good</paper-button></div>
+</div>
+</div>
+    </template>
+    <script>
+        Polymer({
+            is: 'questions-poll',
+            behaviors: [
+                Polymer.NeonSharedElementAnimatableBehavior
+            ],
+            properties: {
+            animationConfig: {
+                value: function() {
+                return {
+                        'exit': [{
+                            name: 'hero-animation',
+                            id: 'hero',
+                            fromPage: this
+                        }, {
+                            name: 'fade-out-animation',
+                            node: this
+                        }]
+                    }
+                }
+            },
+                sharedElements: {
+                    value: function(){
+                        return {
+                            'hero': this.$.elem
+                        }
+                    }
+                }
+            },
+            send: function(){
+                this.fire('requestChangePage');
+            }
+
+        });
+    </script>
+</dom-module>

@@ -5,12 +5,8 @@
     <template>
         <style>
             :host {
-                display: block;
+                display: inline-block;
                 background-color: #e0e0e0;
-            }
-            paper-progress {
-                width: 100%;
-                --paper-progress-active-color: #FFC107;
             }
             @keyframes blink {
                 50%{
@@ -20,28 +16,38 @@
 
             .blink {
                 animation: blink .5s infinite;
-                --paper-progress-active-color:#D32F2F;
+            }
+            span {
+                display: inline-block;
+                padding: 10px 25px;
             }
         </style>
-        <paper-progress
-             value="[[timeElapsed]]"
-             max="[[time]]"
-             id="bar"
-        ></paper-progress>
+        <span id="clock">[[clock]]</span>
     </template>
     <script>
         Polymer({
             is: 'countdown-timer',
             properties: {
                 launcher: Object,
-                time:  Number,
+                time: {
+                    type: Number,
+                    value: 10
+                },
+                timeInSeconds: {
+                    type: Number,
+                    computed: '_convertInSeconds(time)'
+                },
                 timeElapsed: {
                     type: Number,
                     value: 0
+                },
+                clock: {
+                    type: String,
+                    computed: '_convertToDate(timeElapsed, timeInSeconds)'
                 }
             },
             observers: [
-                'observerTimeElapsed(timeElapsed, time)'
+                '_requestBlink(timeElapsed)'
             ],
             ready: function(){
                 this.launchTimer();
@@ -49,32 +55,39 @@
             detached: function(){
                 this.cancelAsync(this.launcher);
             },
-            restart: function() {
-                this.stop();
-                this.timeElapsed = 0;
-                this.launchTimer();
+            _convertInSeconds: function(t){
+                return t * 1000;
             },
-            stop: function(){
-                this.updateStyles();
-                this.cancelAsync(this.launcher);
-                this.$.bar.classList.remove('blink');
-                this.updateStyles();
+            _convertToDate: function (timeElapsed, timeInSeconds){
+                var date = new Date(timeInSeconds - timeElapsed);
+
+                var mm = date.getUTCMinutes();
+                var ss = date.getSeconds();
+                if(mm < 10){
+                     mm = "0" + mm 
+                }
+                if(ss < 10){ 
+                    ss = "0" + ss 
+                }
+
+                var timeConverted = mm + " : " + ss;
+                return timeConverted
+            },
+            _requestBlink: function(t){
+                var percentage = this.timeInSeconds * 70 / 100;
+                if(t >= percentage) {
+                     this.$.clock.classList.add('blink');
+                }
             },
             launchTimer: function(){
-                if(this.timeElapsed < this.time){
-                    this.timeElapsed+=100;
-                    this.launcher = this.async(this.launchTimer, 100);
+                if(this.timeElapsed < this.timeInSeconds){
+                    this.timeElapsed+=1000;
+                    this.launcher = this.async(this.launchTimer, 1000);
                 }else{
-                    this.fire('wrongAnswer');
-                    this.stop();
+                    this.$.clock.classList.remove('blink');
                 }
             },
-            observerTimeElapsed(timeElapsed, time){
-                if(timeElapsed === Math.floor(time * 75 / 100)){
-                        this.$.bar.classList.add('blink');
-                        this.updateStyles();
-                }
-            }
+
         });
     </script>
 </dom-module>

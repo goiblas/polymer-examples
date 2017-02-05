@@ -1,0 +1,47 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/neon-animation/neon-animations.html">
+<link rel="import" href="../../bower_components/neon-animation/neon-animated-pages.html">
+
+
+<link rel="import" href="questions-poll.html">
+<link rel="import" href="result-poll.html">
+
+
+<dom-module id="poll-app">
+    <template>
+        <style>
+            :host {
+                display: block;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                height: 100%;
+            }
+            neon-animated-pages {
+                height: 100%;
+            }
+    
+    </style>
+
+
+      <neon-animated-pages id="pages" selected="0">
+        <questions-poll></questions-poll>
+        <result-poll></result-poll>
+      </neon-animated-pages>
+
+    </template>
+
+    </template>
+    <script>
+        Polymer({
+           is: 'poll-app',
+           properties: {
+            },
+            listeners: {
+                'requestChangePage': 'requestChangePage'
+            },
+            requestChangePage: function(){
+                this.$.pages.selected = 1;
+            }
+
+        });
+    </script>
+</dom-module>
