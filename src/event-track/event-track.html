@@ -1,0 +1,46 @@
+<dom-module id="event-track">
+  <template>
+    <style>
+      #dragme {
+        width: 10px;
+        height: 10px;
+        background: gray;
+        position: absolute;
+        top: 150px;
+        left: 150px;
+        transform: translate(-50%, -50%);
+      }
+      #dragme.dragging {
+          background-color: red;
+      }
+    </style>
+{{message}}
+    <div id="dragme" on-track="handleTrack"></div>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'event-track',
+      handleTrack: function(e) {
+       this.toggleClass("dragging", e.detail.state == 'track', this.$.dragme);
+
+        switch(e.detail.state) {
+
+          case 'track':
+            this.message = 'Tracking in progress... ' +
+              e.detail.x + ', ' + e.detail.y;
+
+              this.$.dragme.style.top = e.detail.y + "px";
+              this.$.dragme.style.left = e.detail.x + "px";
+              
+            break;
+          case 'end':
+            this.message = 'Tracking ended!';
+            break;
+        }
+      }
+
+    });
+  </script>
+</dom-module>
