@@ -33,13 +33,13 @@
                 position:absolute;
             }
             .drag.dragging {
-                background-color: red;
+                background-color: lightgreen;
             }
     </style>
 <div class="wrap">
     
     <template is="dom-repeat" items="{{points}}">
-        <div class="drag" style="top:[[item.y]]px; left: [[item.x]]px;" on-track="handleTrack">[[index]]</div>
+        <div class="drag" style$="top:[[item.y]]px; left: [[item.x]]px;" on-track="handleTrack">[[index]]</div>
     </template>
 
      <svg height="210" width="500">
@@ -77,9 +77,9 @@
                 pointsString: String
             },
               ready: function(){
-                this.actualizarPuntos(this.points);
+                this.updatePoints(this.points);
             },
-            actualizarPuntos: function(p){
+            updatePoints: function(p){
                 var cadena = "";
                 p.forEach(function(el){
                     cadena += el.x + "," + el.y + " ";
@@ -87,29 +87,21 @@
                 this.pointsString = cadena;
             },
       handleTrack: function(e) {
-
        var onTrack = e.detail.state == 'track';
 
        this.toggleClass("dragging", onTrack, e.target);
-
-        if (onTrack) {
-                var px = e.detail.x;
-                var py = e.detail.y;
+       if (onTrack) {
         
-              e.target.style.top = py - posicion.y + "px";
-              e.target.style.left = px - posicion.x + "px";
+              e.target.style.top =  + "px";
+              e.target.style.left = e.detail.x + "px";
 
                var num = parseInt(e.target.textContent);
-               var newValue = {x: px - posicion.x, y: py - posicion.y};
+               var newValue = {x: e.detail.x, y: e.detail.y};
                this.set('points.' + num , newValue);
-               this.actualizarPuntos(this.points);
+               this.updatePoints(this.points);
               
         }
-      },
-      framed: function(node) {
-        var local = node.getBoundingClientRect();
-        return {x: this.x - local.left, y: this.y - local.top};
-    }
+      }
 
     });
   </script>
