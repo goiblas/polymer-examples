@@ -1,0 +1,98 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+
+<dom-module id="item-drop">
+    <template>
+        <style>
+            :host {
+                display: block;
+                --position-top: 10px;
+                --position-left: 15px;
+                --my-width: 10px;
+                --my-height: 15px;
+                background-color: forestgreen;
+                position: fixed;
+                width: var(--my-width);
+                height: var(--my-height);
+                top: var(--position-top);
+                left: var(--position-left);
+            }
+            #wrap {
+                height: 100%;
+                display: flex;
+                align-items: center;
+                flex-direction: column;
+                justify-content: center;
+                pointer-events: none;
+                color: rgba(255,255,255,.25);
+                font-size: 20px;
+                font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+                letter-spacing: 2px;
+                
+                -webkit-touch-callout: none;
+                -webkit-user-select: none;
+                -khtml-user-select: none;
+                -moz-user-select: none;
+                -ms-user-select: none;
+                user-select: none;
+                transition: all .6s;
+            }
+            #wrap.activado {
+                box-shadow: inset rgba(0,0,0,.12) 0 0 0 7px;
+                color: rgba(255,255,255,0.85);
+            }
+        </style>
+        <div id="wrap">
+     <content></content>
+     </div>
+    </template>
+    <script>
+        Polymer({
+            is: 'item-drop',
+            properties: {
+                active:{
+                    type: Boolean,
+                    value: false,
+                    observer: 'requestActive'
+                }
+            },
+            ready: function() {
+                var that = this;
+                window.addEventListener("resize", function() { that.getElementWidth(); });
+            },
+            attached: function(){
+                this.getElementWidth();
+            },
+            requestActive: function(){
+                 this.toggleClass('activado', this.active, this.$.wrap);
+            },
+            getElementWidth: function(){
+                var parent = this.parentNode;
+                var dimension = parent.getBoundingClientRect();
+                this.posicionar(dimension.top, dimension.left);
+                this.redimensionar(dimension.width, dimension.height);
+
+            },
+            posicionar: function(top, left){
+               
+                this.customStyle['--position-top'] = top +'px';
+                this.customStyle['--position-left'] = left +'px';
+                this.updateStyles();
+            },
+           reposicionar: function(top, left){
+               var beforeTop = parseInt(this.customStyle['--position-top']);
+               var beforeLeft = parseInt(this.customStyle['--position-left']);
+
+                this.customStyle['--position-top'] = beforeTop + top +'px';
+                this.customStyle['--position-left'] = beforeLeft + left +'px';
+                this.updateStyles();
+            },
+            redimensionar: function(width, height){
+             
+                this.customStyle['--my-width'] = width +'px';
+                this.customStyle['--my-height'] = height +'px';
+                this.updateStyles();
+            }
+        });
+    </script>
+</dom-module>

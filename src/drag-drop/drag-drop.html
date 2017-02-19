@@ -1,0 +1,116 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
+
+<link rel="import" href="./item-drop.html">
+<link rel="import" href="../countdown-timer/countdown-timer.html">
+
+<link rel="import" href="../poll-app/poll-app.html">
+
+
+<dom-module id="drag-drop">
+    <template>
+    <style is="custom-style">
+            :host {
+                display: block;
+                overflow: hidden;
+                height: 100vh;
+            }
+            .flex-horizontal {
+                @apply(--layout-horizontal);
+                @apply(--layout-wrap);
+            }
+            .flexchild {
+                @apply(--layout-flex);
+
+                height:25vh;
+                box-shadow:inset #ddd 0 0 15px;
+                background-color: #f4f4f4;
+                min-width:25%;
+            }
+            .wrap-main {
+                height: 50vh;
+                background-color: #f4f4f4;
+          
+            }
+            .over {
+                background-color: #fff;
+            }
+            .over item-drop {
+                opacity: .8;
+            }
+            #main {
+                position: relative;
+                z-index: 99;
+                height: 100%;
+            }
+            .shadow {
+                z-index: 2;
+                box-shadow: rgba(0, 0, 0, .5) 0 2px 15px;
+            }
+</style>
+        </style>
+<div class="wrap-main">
+    <div id="main"></div>
+</div>
+<div class="container flex-horizontal">
+    
+    <template is="dom-repeat" items="[[colors]]" as="color">
+            <div class="flexchild">
+                <item-drop on-track="drag" style="background-color:[[color]]">[[color]]</item-drop>
+            </div>
+    </template>
+
+</div>
+
+    </template>
+    <script>
+        Polymer({
+            is: 'drag-drop',
+            properties: {
+                colors : {
+                    type: Array,
+                    value: function(){
+                        return [
+                            '#8E24AA','#E53935', '#3949AB', '#689F38', '#FF8F00', '#795548', '#455A64', '#0288D1'
+                        ]
+                    }
+                }
+            },
+            drag: function(e){
+                
+                var over = e.detail.hover();
+                var main = this.$.main;
+
+
+                switch(e.detail.state) {
+                case 'start':
+                    this.toggleClass('shadow',true, e.target);
+                    break;
+                case 'track':
+
+                    e.target.reposicionar(e.detail.ddy, e.detail.ddx);
+                    this.toggleClass('over',over == main, main.parentNode);
+                    
+                    break;
+                case 'end':
+
+                    this.toggleClass('shadow',false, e.target);
+                    this.toggleClass('over',false, main.parentNode);
+
+                    if(over == main){
+                        this.toggleAttribute('active', false, this.$$('item-drop[active]'));
+
+                        var clon = e.target.cloneNode(true);
+                        main.parentNode.appendChild(clon);                        
+                        this.toggleAttribute('active', true, e.target);
+                    }else {
+                        
+                    }
+                     e.target.getElementWidth();
+                    break;
+                }
+            }
+        
+        });
+    </script>
+</dom-module>
