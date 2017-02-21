@@ -1,0 +1,86 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+
+<link rel="import" href="./character-card.html">
+
+<dom-module id="battle-objects">
+    <template>
+        <style>
+            :host {
+                display: block;
+                background-image: url(/assets/bg.jpg);
+                background-size: cover;
+                background-position: center;
+                height: 100vh;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+            div {
+                width: 100%;
+                display: flex;
+                justify-content: space-around;
+                align-items: center;
+            }
+            div:first-child{
+                height:76vh;
+            }
+            paper-button {
+                background-color: #fff;
+                padding: 18px 40px;
+            }
+        </style>
+        <div>
+        <character-card character="[[players.player1]]"></character-card>
+        
+        <character-card character="[[players.player2]]"></character-card>
+</div>
+<div><paper-button raised on-tap="fight">Fight!</paper-button></div>
+
+
+    </template>
+    <script>
+        Polymer({
+            is: 'battle-objects',
+            properties: {
+                players: {
+                    type: Object,
+                    value: function(){
+                       return {
+                            player1: {
+                                name: "Character 1",
+                                life: 250,
+                                currentLife: 250,
+                                attack: 150
+                            },
+                            player2: {
+                                name: "Character 2",
+                                life: 310,
+                                currentLife: 310,
+                                attack: 104
+                            }
+                       }  
+                    }
+                },
+                turn: Boolean,
+                fighting: Object
+            },
+
+            fight: function(){
+                this.turn = !this.turn;
+                if(this.turn){
+                    this.set("players.player1.currentLife", this.players.player1.currentLife -= this.generateAttack(this.players.player1.attack));
+                }else {
+                    this.set("players.player2.currentLife", this.players.player2.currentLife -= this.generateAttack(this.players.player2.attack));
+                }
+                if(this.players.player1.currentLife > 0 && this.players.player2.currentLife > 0) {
+                   this.fighting = this.async(this.fight, 1000);
+                }
+                
+            },
+            generateAttack: function(max){
+                return Math.floor((Math.random() * max) + 1);
+            }
+        });
+    </script>
+</dom-module>

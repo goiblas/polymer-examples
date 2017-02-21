@@ -16,6 +16,13 @@
                 height: var(--my-height);
                 top: var(--position-top);
                 left: var(--position-left);
+
+                cursor: move; 
+                cursor: grab;
+                cursor: -moz-grab;
+                cursor: -webkit-grab;
+
+
             }
             #wrap {
                 height: 100%;
@@ -36,10 +43,12 @@
                 -ms-user-select: none;
                 user-select: none;
                 transition: all .6s;
+
             }
             #wrap.activado {
                 box-shadow: inset rgba(0,0,0,.12) 0 0 0 7px;
                 color: rgba(255,255,255,0.85);
+
             }
         </style>
         <div id="wrap">

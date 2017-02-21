@@ -1,0 +1,85 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="character-card">
+    <template>
+        <style>
+            :host {
+                display: inline-block;
+                width: 320px;
+                --photo-url: url(assets/character1.jpg);
+                --bar-width: 100%;
+
+
+            }
+            .card {
+                background-color: #fff;
+                border-radius: 5px;
+                box-shadow: rgba(0, 0, 0, 0.5) 0 2px 15px;
+                overflow: hidden;
+            }
+            .dead {
+                filter: grayscale(100%);
+            }
+            .name {
+                text-align: center;
+                padding: 12px;
+                font-size: 19px;
+                font-family: Cambria, Cochin, Georgia, Times, Times New Roman, serif;
+            }
+            .photo {
+                background-image: var(--photo-url);
+                min-height: 40vh;
+                background-size: contain;
+                background-repeat: no-repeat;
+                background-position: center;
+            }
+            .life {
+                height: 25px;
+                background-color: #ddd;
+            }
+            .bar {
+                height: 100%;
+                background-color: mediumseagreen;
+                width: var(--bar-width);
+                transition: all .5s;
+            }
+        </style>
+        <div class="card">
+                <div class="name">[[character.name]]</div>
+                <div class="photo"></div>
+                <div class="life"><div class="bar"></div></div>
+        </div>
+
+    </template>
+    <script>
+        Polymer({
+            is: 'character-card',
+            properties: {
+                character: Object,
+                photoURL: {
+                    type: String,
+                    computed: 'nameUrlImage(character.name)'
+                }
+            },
+            observers: [
+                'barlife(character.currentLife, character.life)'
+            ],
+            nameUrlImage: function(name){
+                return name.toLowerCase().replace(/\s/g,'');
+            },
+            ready: function(){
+                this.customStyle['--photo-url'] = 'url(./assets/' + this.photoURL + '.jpg)';
+                this.updateStyles();
+            },
+            barlife: function(current, whole){
+                var percentage = parseInt(current * 100 / whole);
+                this.customStyle['--bar-width'] = percentage + '%';
+                this.updateStyles();
+                if(percentage <= 0){
+                    this.$$(".card").classList.add('dead');
+                    this.fire('dead', this.character)
+                }
+            }
+        });
+    </script>
+</dom-module>
