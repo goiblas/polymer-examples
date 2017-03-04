@@ -1,0 +1,77 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/app-route/app-location.html">
+<link rel="import" href="../../bower_components/app-route/app-route.html">
+
+
+<dom-module id="routing-color">
+    <template>
+        <style>
+            :host {
+                display: block;
+                --bg-color: #d51514;
+            }
+            #bg {
+               height: 100vh;
+               display: flex;
+                align-items: center;
+                justify-content: center;
+                background-color: var(--bg-color);
+            }
+            paper-button {
+                background-color: #fff;
+            }
+        </style>
+
+
+        <!-- use-hash-as-path for use /#/ -->
+<app-location
+    id="location"
+    route="{{route}}"
+ ></app-location>
+<app-route
+    id="route"
+    route="{{route}}"
+    pattern="/:color"
+    data="{{routeData}}"
+>
+</app-route>
+
+        <div id="bg">
+
+            <paper-button raised on-tap="changeUrl">Random Color</paper-button>
+            
+        </div>
+    </template>
+    <script>
+        Polymer({
+            is: 'routing-color',
+            properties: {
+                route: Object,
+                routeData: {
+                    type: Object,
+                    observer: 'getRouteData'
+                },
+            },
+            changeUrl:function(){
+                var color = this._randomColor();
+                this.$.location.set('route.path', color)
+            },
+            getRouteData: function(data){
+                
+                var color = '#' + data.color;
+                this.customStyle['--bg-color'] = color;
+                this.updateStyles();
+        
+            },
+            _randomColor: function (){
+                var letters = '0123456789ABCDEF';
+                var color = "";
+                for (var i = 0; i < 6; i++ ) {
+                    color += letters[Math.floor(Math.random() * 16)];
+                }
+                return color;
+            }
+        });
+    </script>
+</dom-module>
